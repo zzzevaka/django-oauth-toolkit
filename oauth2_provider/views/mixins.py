@@ -76,7 +76,8 @@ class OAuthLibMixin(object):
         """
         server_class = cls.get_server_class()
         validator_class = cls.get_validator_class()
-        return server_class(validator_class())
+        expires_in = oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS
+        return server_class(validator_class(), expires_in=expires_in)
 
     @classmethod
     def get_oauthlib_core(cls):
@@ -91,7 +92,8 @@ class OAuthLibMixin(object):
 
     def validate_authorization_request(self, request):
         """
-        A wrapper method that calls validate_authorization_request on `server_class` instance.
+        A wrapper method that calls validate_authorization_request
+        on `server_class` instance.
 
         :param request: The current django.http.HttpRequest object
         """
@@ -145,7 +147,8 @@ class OAuthLibMixin(object):
 
     def get_scopes(self):
         """
-        This should return the list of scopes required to access the resources. By default it returns an empty list
+        This should return the list of scopes required to access the resources.
+        By default it returns an empty list.
         """
         return []
 
@@ -243,4 +246,5 @@ class ReadWriteScopedResourceMixin(ScopedResourceMixin, OAuthLibMixin):
 
     def get_scopes(self, *args, **kwargs):
         scopes = super(ReadWriteScopedResourceMixin, self).get_scopes(*args, **kwargs)
-        return scopes + [self.read_write_scope]  # this returns a copy so that self.required_scopes is not modified
+        # this returns a copy so that self.required_scopes is not modified
+        return scopes + [self.read_write_scope]

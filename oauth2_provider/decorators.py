@@ -1,8 +1,8 @@
 from functools import wraps
 
-from oauthlib.oauth2 import Server
 from django.http import HttpResponseForbidden
 from django.core.exceptions import ImproperlyConfigured
+from oauthlib.oauth2 import Server
 
 from .oauth2_validators import OAuth2Validator
 from .oauth2_backends import OAuthLibCore
@@ -27,7 +27,8 @@ def protected_resource(scopes=None, validator_cls=OAuth2Validator, server_cls=Se
         @wraps(view_func)
         def _validate(request, *args, **kwargs):
             validator = validator_cls()
-            core = OAuthLibCore(server_cls(validator))
+            expires_in = oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS
+            core = OAuthLibCore(server_cls(validator, expires_in=expires_in))
             valid, oauthlib_req = core.verify_request(request, scopes=_scopes)
             if valid:
                 request.resource_owner = oauthlib_req.user
@@ -41,7 +42,8 @@ def rw_protected_resource(scopes=None, validator_cls=OAuth2Validator, server_cls
     """
     Decorator to protect views by providing OAuth2 authentication and read/write scopes
     out of the box.
-    GET, HEAD, OPTIONS http methods require "read" scope. Otherwise "write" scope is required.
+    GET, HEAD, OPTIONS http methods require "read" scope.
+    Otherwise "write" scope is required.
 
         @rw_protected_resource()
         def my_view(request):
@@ -74,7 +76,8 @@ def rw_protected_resource(scopes=None, validator_cls=OAuth2Validator, server_cls
 
             # proceed with validation
             validator = validator_cls()
-            core = OAuthLibCore(server_cls(validator))
+            expires_in = oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS
+            core = OAuthLibCore(server_cls(validator, expires_in=expires_in))
             valid, oauthlib_req = core.verify_request(request, scopes=_scopes)
             if valid:
                 request.resource_owner = oauthlib_req.user

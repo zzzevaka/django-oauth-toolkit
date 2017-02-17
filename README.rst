@@ -107,6 +107,9 @@ Changelog
 * **Dropped support for Python 3.2 and Python 3.3**, added support for Python 3.6
 * Support for the `scopes` query parameter, deprecated in 0.6.1, has been dropped
 * #448: Added support for customizing applications' allowed grant types
+* #338: `ACCESS_TOKEN_EXPIRE_SECONDS` is now directly passed to the oauthlib Server class. This
+  means it can now be a callable which takes an oauthlib Request parameter in order to dynamically
+  determine its value.
 
 0.11.0 [2016-12-1]
 ~~~~~~~~~~~~~~~~~~
