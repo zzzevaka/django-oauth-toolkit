@@ -35,15 +35,32 @@ class RedirectURIValidator(URIValidator):
         scheme, netloc, path, query, fragment = urlsplit(value)
         if fragment and not self.allow_fragments:
             raise ValidationError("Redirect URIs must not contain fragments")
-        if scheme.lower() not in self.schemes:
-            raise ValidationError("Redirect URI scheme is not allowed.")
+
+    def validate_scheme(self, scheme):
+        # Always return True to make scheme validation always succeed.
+        # Instead, we validate the scheme in OAuth2Application.clean()
+        # https://github.com/django/django/pull/9991
+        return True
+
+
+##
+# WildcardSet is a special set that contains everything.
+# This is required in order to move validation of the scheme from
+# URLValidator (the base class of URIValidator), to OAuth2Application.clean().
+
+class WildcardSet(set):
+    """
+    A set that always returns True on `in`.
+    """
+    def __contains__(self, item):
+        return True
 
 
 def validate_uris(value):
     """
     This validator ensures that `value` contains valid blank-separated URIs"
     """
-    v = RedirectURIValidator(oauth2_settings.ALLOWED_REDIRECT_URI_SCHEMES)
+    v = RedirectURIValidator(WildcardSet())
     uris = value.split()
     if not uris:
         raise ValidationError("Redirect URI cannot be empty")

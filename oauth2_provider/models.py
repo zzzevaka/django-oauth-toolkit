@@ -125,12 +125,27 @@ class AbstractApplication(models.Model):
 
     def clean(self):
         from django.core.exceptions import ValidationError
-        if not self.redirect_uris \
-            and self.authorization_grant_type \
-            in (AbstractApplication.GRANT_AUTHORIZATION_CODE,
-                AbstractApplication.GRANT_IMPLICIT):
-            error = _("Redirect_uris could not be empty with {grant_type} grant_type")
-            raise ValidationError(error.format(grant_type=self.authorization_grant_type))
+
+        grant_types = (
+            AbstractApplication.GRANT_AUTHORIZATION_CODE,
+            AbstractApplication.GRANT_IMPLICIT,
+        )
+
+        redirect_uris = self.redirect_uris.strip().split()
+        allowed_schemes = set(s.lower() for s in self.get_allowed_schemes())
+
+        if redirect_uris:
+            for uri in redirect_uris:
+                scheme = urlparse(uri).scheme
+                if scheme not in allowed_schemes:
+                    raise ValidationError(_(
+                        "Unauthorized redirect scheme: {scheme}"
+                    ).format(scheme=scheme))
+
+        elif self.authorization_grant_type in grant_types:
+            raise ValidationError(_(
+                "redirect_uris cannot be empty with grant_type {grant_type}"
+            ).format(grant_type=self.authorization_grant_type))
 
     def get_absolute_url(self):
         return reverse("oauth2_provider:detail", args=[str(self.id)])
