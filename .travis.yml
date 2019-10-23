@@ -4,7 +4,7 @@ dist: xenial
 language: python
 
 python:
-  - "3.4"
+  - "3.7"
 
 cache:
   directories:
@@ -15,7 +15,7 @@ install:
   - pip install coveralls tox tox-travis
 
 script:
-  - tox
+  - tox -op auto
 
 after_script:
   - coveralls
