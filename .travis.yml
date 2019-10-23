@@ -16,7 +16,7 @@ install:
 
 script:
   - rm -rf $TRAVIS_BUILD_DIR/.tox
-  - tox -rop auto
+  - tox -op1
 
 after_script:
   - coveralls
