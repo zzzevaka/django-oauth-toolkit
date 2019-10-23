@@ -15,8 +15,8 @@ install:
   - pip install coveralls tox tox-travis
 
 script:
-  - rm -r $TRAVIS_BUILD_DIR/.tox
-  - tox -op auto
+  - rm -rf $TRAVIS_BUILD_DIR/.tox
+  - tox -rop auto
 
 after_script:
   - coveralls
