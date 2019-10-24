@@ -4,18 +4,18 @@ dist: xenial
 language: python
 
 python:
-  - "3.6"
+  - "3.7"
 
-cache:
-  directories:
-    - $HOME/.cache/pip
-    - $TRAVIS_BUILD_DIR/.tox
+#cache:
+#  directories:
+#    - $HOME/.cache/pip
+#    - $TRAVIS_BUILD_DIR/.tox
 
 install:
   - pip install coveralls tox tox-travis
 
 script:
-  - tox
+  - tox -r
 
 after_script:
   - coveralls
