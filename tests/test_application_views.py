@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+import pytest
 
 from oauth2_provider.models import get_application_model
 from oauth2_provider.settings import oauth2_settings
@@ -8,6 +9,7 @@ from oauth2_provider.views.application import ApplicationRegistration
 
 from .models import SampleApplication
 
+pytestmark = pytest.mark.django_db
 
 Application = get_application_model()
 UserModel = get_user_model()

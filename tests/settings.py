@@ -9,6 +9,8 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = "auth.User"
+
 ALLOWED_HOSTS = []
 
 TIME_ZONE = "UTC"
