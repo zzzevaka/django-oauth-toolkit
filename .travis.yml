@@ -6,16 +6,16 @@ language: python
 python:
   - "3.6"
 
-#cache:
-#  directories:
-#    - $HOME/.cache/pip
-#    - $TRAVIS_BUILD_DIR/.tox
+cache:
+  directories:
+    - $HOME/.cache/pip
+    - $TRAVIS_BUILD_DIR/.tox
 
 install:
   - pip install coveralls tox tox-travis
 
 script:
-  - tox -rop1
+  - tox
 
 after_script:
   - coveralls
